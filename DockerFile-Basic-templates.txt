@@ -31,8 +31,18 @@ curl -fsSL  https://raw.githubusercontent.com/ajiahamed/deployment/refs/heads/ma
 > docker volume create Volumename
 > docker volume inspect vulumename
 > docker volume rm volumename
-> docker run -d -v my_volume:/app/data busybox  //To attach volume /app/data is the workdir 
-						//stored in /var/lib/docker/volumes/	
+> docker run -d -v my_volume:/app/data busybox  //To attach volume /app/data is the workdir //stored in /var/lib/docker/volumes/	
+
+1) docker system df   //shows disk usage broken down by images, containers, volumes, and build cache, with a reclaimable column. 
+1.1) docker system df -v //Verbose mode — breaks it down per item:
+2) docker system prune     //
+
+3) docker system df -v   //See what's using space	  
+4) docker system prune  //Clean stopped containers + dangling images//stopped containers, dangling images, unused networks, and build cache — but not tagged images or volumes by default.
+5) docker system prune -a  //Also remove unused tagged images	    
+6) docker <type> prune    //Remove one category only
+7) docker system prune -a --volumes //Nuclear option (deletes volume data)
+
 ============================================================================
 Docker Swarm:
 
