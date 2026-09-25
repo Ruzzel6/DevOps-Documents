@@ -1,0 +1,153 @@
+Services: //To make it accessible outside or expose it outside.
+* It creates a stale network and assign a stable IP
+
+
+Deploymet ----> Pods  ----> Service
+
+1)http://medium.com/@bregman.arie/kubernetes-services-the-practical-guide-8ea8f9b754a2
+
+Deploying a web server with service.
+----------------------------------
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webserver
+  template:
+    metadata:
+      labels:
+        app: webserver
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: web-content
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: web-content
+        configMap:
+          name: webserver-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webserver-config
+data:
+  index.html: |
+    <html>
+    <head><title>Hello World</title></head>
+    <body>
+    <h1>Hello, world!</h1>
+    </body>
+    </html>
+
+To load this we need service, 3 Types if service
+1)Clusterip
+2)nodeport
+3)Load balancer
+4)external name
+
+
+1) ClusterIp.yml ---Local data transfer can be done with ClusterIP - For internal communication
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: webserver-service
+  namespace: web
+spec:
+  type: ClusterIP
+  selector:
+    app: webserver
+  ports:
+  - port: 80
+    targetPort: 80
+
+To Test:
+❯ kubectl run curlpod --image=radial/busyboxplus:curl -i --tty --rm //This creates a pod so that we can test if clusterIP is working
+
+ wget -O- http://webserver-service:80
+
+
+======================
+
+2)Nodeport >> Will assign a port to the node and 
+
+A NodePort service opens a gateway for external access to your cluster and web application. It operates by exposing a specific port at the node level within Kubernetes. Traffic hitting this node port is then forwarded to the corresponding service, which in turn routes it to your web application.
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: webserver-nodeport
+  namespace: web
+spec:
+  type: NodePort
+  selector:
+    app: webserver
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30007
+
+port: 80	Service internal port (ClusterIP port)
+targetPort: 80	Container port on Pod
+nodePort: 30007	External port opened on Node
+
+
+
+3) LoadBalancer service:
+
+Now that we’ve seen the limitations of ClusterIP for internal-only communication and NodePort’s shortcomings for production use due to its lack of traffic balancing, let’s explore the LoadBalancer service. As the name suggests, a LoadBalancer service in Kubernetes facilitates external access to your service through a cloud provider’s load balancer. This setup allows external traffic to be distributed efficiently to your service. Essentially, creating a LoadBalancer service in Kubernetes triggers the automatic provisioning of an external load balancer by your cloud provider, seamlessly integrating cloud infrastructure to manage traffic flow.
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: webserver-loadbalancer
+  namespace: web
+spec:
+  type: LoadBalancer
+  selector:
+    app: webserver
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+Applying this YAML doesn’t just create a service; it also signals your cloud provider to set up a load balancer. Initially, the EXTERNAL-IP field might show as 'pending' while the load balancer is being provisioned.
+
+
+
+4) ExternalName- A Kubernetes ExternalName Service is a special type of service that maps a service name within the cluster to an external DNS name. 
+
+externalname.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-database
+spec:
+  type: ExternalName
+  externalName: db-prod.example.com
+
+
+
+Refer document https://medium.com/@bregman.arie/kubernetes-services-the-practical-guide-8ea8f9b754a2
+
+
+
+Pending Ingress and helm
+
+Ingress >> Path based and host based routing
+
+https://medium.com/@subhampradhan966/understanding-ingress-in-kubernetes-key-concepts-and-configuration-6d5348060598

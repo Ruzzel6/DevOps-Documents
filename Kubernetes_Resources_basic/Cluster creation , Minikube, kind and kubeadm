@@ -1,0 +1,145 @@
+🔹 Section 1: Cluster Setup
+
+🧱 Task 1 – Install Kind (Kubernetes in Docker)
+Install Docker on your system.
+Install Kind:
+📝 Question:
+
+1) How can you list all contexts available after creating the Kind cluster?
+
+# sudo kubectl config get-contexts
+CURRENT   NAME               CLUSTER            AUTHINFO           NAMESPACE
+*         kind-new-cluster   kind-new-cluster   kind-new-cluster
+
+# kubectl config view 
+
+# sudo kubectl cluster-info --context kind-new-cluster
+Kubernetes control plane is running at https://127.0.0.1:42169
+CoreDNS is running at https://127.0.0.1:42169/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+2) How do you delete the Kind cluster?
+
+# sudo kind create cluster --name new-cluster
+# sudo kind get clusters
+-To delete-
+# sudo kind delete cluster --name ruz
+Deleting cluster "ruz" ...
+Deleted nodes: ["ruz-control-plane"]
+==========================================================
+
+🧩 Task 2 – Install Minikube
+
+1) Install Minikube and kubectl.
+Start the cluster:
+📝 Question:
+
+ruzzel@Ruzzel:/usr/local/bin$ kubectl get nodes
+NAME       STATUS   ROLES           AGE   VERSION
+minikube   Ready    control-plane   67m   v1.34.0
+
+2) How can you access the Minikube dashboard?
+# minikube dashboard
+
+http://127.0.0.1:36969/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
+
+3) How do you stop and delete the Minikube cluster?
+
+$ minikube stop
+✋  Stopping node "minikube"  ...
+🛑  Powering off "minikube" via SSH ...
+🛑  1 node stopped.
+
+$ minikube delete
+🔥  Deleting "minikube" in docker ...
+🔥  Deleting container "minikube" ...
+🔥  Removing /home/ruzzel/.minikube/machines/minikube ...
+💀  Removed all traces of the "minikube" cluster.
+
+# docker system prune -f     # Remove all stopped containers and unused images
+
+
+🧱 Task 3 – Create a Cluster using Kubeadm (Multi-node)
+
+$ kubectl get nodes
+NAME               STATUS   ROLES           AGE     VERSION
+ip-172-31-29-61    Ready    control-plane   15m     v1.29.15
+ip-172-31-31-234   Ready    <none>          3m33s   v1.29.15
+
+Setup one control plane node and one worker node (on 2 VMs).
+On worker node, join the cluster using the token printed by kubeadm init:
+
+📝 Question:
+
+1) What does the --pod-network-cidr flag do?
+
+The --pod-network-cidr flag specifies the IP address range that Kubernetes will use for Pod networks. 
+-Ensures Pod IPs don't overlap with your host network or other services
+-Each Pod gets a unique IP within this range
+
+# sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+2) How do you regenerate a join token if it expires?
+
+# kubeadm token create --print-join-command
+
+🔹 Section 2: Namespaces & Pods
+
+🧩 Task 4 – Create and Manage Namespaces
+
+1) Create a namespace called dev-env:
+ruzzel@Ruzzel:~$ sudo kubectl create ns dev-env
+namespace/dev-env created
+
+2) List all namespaces:
+
+~$ sudo kubectl get ns
+NAME                 STATUS   AGE
+default              Active   2d8h
+dev-env              Active   51s
+kube-node-lease      Active   2d8h
+kube-public          Active   2d8h
+kube-system          Active   2d8h
+local-path-storage   Active   2d8h
+
+📝 Question:
+
+3) How can you make kubectl use a specific namespace by default?
+
+$ kubectl config set-context --current --namespace=dev-env
+Context "kind-ruz-cluster" modified.
+
+$ kubectl get pods
+No resources found in dev-env namespace.
+
+$ kubectl config set-context --current --namespace=default   //To go back to default NS
+
+
+🧱 Task 5 – Pod Creation
+
+4) Create a simple nginx pod in the dev-env namespace:
+
+$kubectl run nginx-dev --image=nginx:alpine --namespace=dev-env
+pod/nginx-dev created
+
+$kubectl get pods -n=dev-env
+
+-----
+NAME        READY   STATUS    RESTARTS   AGE
+nginx-dev   1/1     Running   0          15s
+ruzzel@Ruzzel:~$
+----
+
+5) Delete the pod and service.
+
+$kubectl delete pod nginx-dev -n=dev-env
+
+6) What happens when you delete a pod — does the service still stay active?
+
+The service stays active even after you delete. 
+
+7) How can you describe a pod’s details?
+
+$ kubectl describe pods
+$ kubectl describe pod nginx-dev2 -n dev-env    //To describe the pod nginx-dev2 in the namespace dev-env

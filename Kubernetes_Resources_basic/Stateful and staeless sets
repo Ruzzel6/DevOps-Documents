@@ -1,0 +1,138 @@
+1)Goal: Understand how StatefulSets manage stateful applications.
+Tasks:
+Create a Headless Service named mysql.
+Create a StatefulSet named mysql with:
+3 replicas
+Image: mysql:8
+VolumeClaimTemplate for persistent storage
+Environment variables for MySQL root password
+Observe that each Pod has a stable identity (mysql-0, mysql-1, mysql-2).
+
+Delete a Pod and check that the same Pod name and volume are retained.
+
+
+1>> A headless service is required for a StatefulSet to provide stable network identities.
+mysqlservice.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  clusterIP: None
+  ports:
+    - port: 3306
+      name: mysql
+  selector:
+    app: MySQL
+2>> StatefulSet (mysql)
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  serviceName: mysql
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8
+          ports:
+            - containerPort: 3306
+              name: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: rootpassword
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi
+
+
+
+//To watch only Pods belonging to a specific StatefulSet (labels -l)
+
+# kubectl get pods -l app=mysql
+NAME      READY   STATUS              RESTARTS   AGE
+mysql-0   1/1     Running             0          6m34s
+mysql-1   1/1     Running             0          6m33s
+mysql-2   0/1     ContainerCreating   0          2m57s
+
+3) List PersistentVolumeClaims
+
+$ kubectl get pvc
+
+------
+ruzzel@Ruzzel:~/k8s$ kubectl get pvc
+NAME                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+mysql-data-mysql-0   Bound    pvc-2ddd8d2c-6f8d-4759-8d17-8b2a985135dd   5Gi        RWO            standard       <unset>                 14m
+mysql-data-mysql-1   Bound    pvc-ca6a0542-4c4f-4ec7-a8a8-43dde9110cb4   5Gi        RWO            standard       <unset>                 9m27s
+mysql-data-mysql-2   Bound    pvc-d6105178-46ed-4ff7-b3b4-3190b8d986fc   5Gi        RWO            standard       <unset>                 5m51s
+
+------
+$ kubectl get pv
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                        STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pvc-2ddd8d2c-6f8d-4759-8d17-8b2a985135dd   5Gi        RWO            Delete           Bound    default/mysql-data-mysql-0   standard       <unset>                          23d
+pvc-ca6a0542-4c4f-4ec7-a8a8-43dde9110cb4   5Gi        RWO            Delete           Bound    default/mysql-data-mysql-1   standard       <unset>                          23d
+pvc-d6105178-46ed-4ff7-b3b4-3190b8d986fc   5Gi        RWO            Delete           Bound    default/mysql-data-mysql-2   standard       <unset>                          23d
+-----------------------------------
+
+*Your cluster has a StorageClass named standard with the provisioner rancher.io/local-path. This is a dynamic provisioner that creates local storage on your Kubernetes nodes.
+* Your PVs will be created: The rancher.io/local-path provisioner will automatically create PersistentVolumes when your StatefulSet requests them. 
+
+
+ kubectl get storageclass
+NAME                 PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+standard (default)   rancher.io/local-path   Delete          WaitForFirstConsumer   false                  75d
+------
+
+To delete:
+# kubectl delete pvc -l app=mysql
+
+
+===================================================================
+
+Q) Observe that each Pod has a stable identity (mysql-0, mysql-1, mysql-2).
+Q) Delete a Pod and check that the same Pod name and volume are retained.
+
+
+Check if mysql-1 is using the same volume (After deletring)
+$ kubectl describe pod mysql-1
+
+
+2)Goal: Understand Kubernetes storage management.
+
+Tasks:
+
+Create a PersistentVolume named pv-demo with:
+
+Capacity: 1Gi
+
+Access mode: ReadWriteOnce
+
+HostPath: /mnt/data
+
+Create a PVC named pvc-demo requesting 500Mi.
+
+Mount the PVC to a Pod running nginx.
+
+Verify file persistence even after Pod deletion.
+Task 1 — Hello World Job
+
+Goal: Run a one-time Job that prints a message and exits.
+ Goal: Run a CronJob every minute that prints current date and time

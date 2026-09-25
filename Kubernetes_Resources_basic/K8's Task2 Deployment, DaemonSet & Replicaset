@@ -1,0 +1,186 @@
+1) Task Title: Deploy nginx webserver on Kubernetes
+Scenario:You are working as a DevOps engineer and need to deploy a simple web application on a Kubernetes cluster using a Deployment object.
+Requirements:Create a Deployment named web-app-deployment that: Uses the Docker image nginx:latest. Runs 3 replicas:: the container port 80.::Includes a label app: web-app
+
+Deployment.yaml
+=====================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: web-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+================================
+#kubectl apply -f deployment.yaml  //To create 
+#kubectl delete -f deployment.yaml  //To delete
+
+#kubectl get deployment
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deployment   3/3     3            3           17s
+
+#kubectl get pods            //To get the pods
+#kubectl get pods -o wide   //More details on pods, like node, IP address, NOMINATED NODE , READINESS GATES
+
+#kubectl get pods -l app=web-app  //To list all pods with label web-app
+#kubectl delete pods podname      //To delete pods
+
+#kubectl describe deployment nginx-deployment               //to describe deployment name nginx-deployment
+
+#kubectl scale deployments nginx-deployment --replicas=10        //To scale manually
+#kubectl set image deployment nginx-deploy nginx=nginx:1.27-alpine  //For rolling update to other version
+
+2) Tasks:Create a Deployment named nginx-deployment with: 3 replicas
+Image: nginx:latest   || Label: app=nginx
+
+#kubectl scale deployments nginx-deployment --replicas=5      //Scale the Deployment up to 5 replicas.
+#kubectl set image deployment nginx-deploy nginx=nginx:1.27-alpine    //Update the image to nginx:1.27-alpine/rolling update
+
+-here nginx is container name
+-if you describe the deployment you can see (StrategyType:RollingUpdate)
+
+#kubectl rollout undo deployment/nginx-deployment //Rollback the Deployment to the previous version.
+#kubectl rollout status deployment nginx-deploy    // To check Rollout status
+#kubectl rollout history deployment nginx-deploy   //# Rollout history
+
+#kubectl get replicasets -l app=web-app         //Check all replica sets
+#kubectl get deployment nginx-deployment -o yaml     //# Check current deployment configuration
+
+===============
+ruzzel@Ruzzel:~/k8s$ kubectl rollout history deployment nginx-deploy
+deployment.apps/nginx-deploy
+REVISION  CHANGE-CAUSE
+2         <none>
+3         <none>
+==============
+
+# See what changed between revisions
+#kubectl rollout history deployment nginx-deploy --revision=2
+#kubectl rollout history deployment nginx-deploy --revision=3
+==============
+
+3) Tasks: Goal: Run a Pod on every node in the cluster.
+Create a DaemonSet named node-monitor using the image busybox:latest.
+Make it run a simple command like:
+while true; do echo "Node monitoring..."; sleep 30; done
+Check if one Pod runs on each node.
+Delete and recreate one node to observe DaemonSet behavior.
+
+
+=====================
+
+ruzzel@Ruzzel:~/k8s$ cat daemonsetbusybox.yml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-monitor
+  labels:
+    app: node-monitor
+spec:
+   selector:
+     matchLabels:
+       name: node-monitor-pod
+   template:
+     metadata:
+      labels:
+        name: node-monitor-pod
+     spec:
+       containers:
+        - name: node-monitor
+          image: busybox:latest
+          command:
+          - /bin/sh
+          - -c
+          - while true; do echo "Node monitoring..."; sleep 30; done
+ruzzel@Ruzzel:~/k8s$
+=====================
+
+$ kubectl get pods -l name=node-monitor-pod -o wide
+
+NAME                 READY   STATUS    RESTARTS   AGE     IP           NODE                 NOMINATED NODE   READINESS GATES
+node-monitor-nsvlp   1/1     Running   0          2m31s   10.244.2.4   my-cluster-worker3   <none>           <none>
+node-monitor-p655c   1/1     Running   0          2m31s   10.244.3.4   my-cluster-worker2   <none>           <none>
+node-monitor-zkk44   1/1     Running   0          2m31s   10.244.1.4   my-cluster-worker    <none>           <none>
+
+---Delete and recreate one node to observe DaemonSet behavior.
+
+$ kubectl get pods -l name=node-monitor-pod -o wide --watch  //To watch pod deletion and creation
+
+The DaemonSet controller immediately detects the pod deletion and creates a new replacement pod on the same node.
+
+-New pod is always created on the same node as the deleted pod
+-DaemonSet maintains the "one pod per node" rule
+==========
+$ kubectl logs -l name=node-monitor-pod --tail=3    //To check logs
+Node monitoring...
+Node monitoring...
+Node monitoring...
+Node monitoring...
+Node monitoring...
+
+To get daemonset:
+$ kubectl get daemonset 
+$ kubectl get daemonset -n kube-system  //To get daemonset existing in namespace kube-system
+$ kubectl describe daemonset node-monitor
+
+
+
+
+ReplicaSet.yaml:
+============================
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend-replica
+spec:
+    replicas: 4
+    selector:
+      matchLabels:
+        app: frontend
+    template:
+      metadata:
+        labels:
+          app: frontend
+      spec:
+        containers:
+        - name: frontend
+          image: nginx
+          ports:
+            - containerPort: 80
+=====================
+
+ruzzel@Ruzzel:~/k8s$ cat daemonset.yml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: log-collect
+spec:
+   selector:
+     matchLabels:
+       name: log-collector
+   template:
+     metadata:
+      labels:
+        name: log-collector
+     spec:
+       containers:
+        - name: fluentd
+          image: fluentd:latest
+          ports:
+          - containerPort: 80
+===================

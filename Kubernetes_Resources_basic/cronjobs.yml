@@ -1,0 +1,54 @@
+1) Cronjob.yml      //To schedule a task or Job
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello
+spec:
+  schedule: "13 09 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: hello
+              image: busybox:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -c
+                - date; echo "Hello from the K8's cluster"
+          restartPolicy: OnFailure
+
+# kubectl get CronJobs
+
+
+2) Jobs.yaml  //To do a job instantly like creating a backup.
+
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello
+spec:
+  schedule: "13 09 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: hello
+              image: busybox:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -c
+                - date; echo "Hello from the K8's cluster"
+          restartPolicy: OnFailure
+  backoffLimit: 4
+
+# kubectl apply -f jobs.yaml
+//backoffLimit tries the backup for 4 times before it exist.
+
+
+
