@@ -1,3 +1,7 @@
+//"This script hits the GitHub API's collaborators endpoint for a repo, authenticates with a personal access token, and uses jq to filter and extract just the usernames that have read access
+//useful for periodic access audits without manually checking the repo settings UI each time."
+
+
 #!/bin/bash
 
 # GitHub API URL
