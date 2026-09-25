@@ -1,0 +1,33 @@
+
+1. Generate a dynamic app config file locally with Terraform. Use local_file to create app.conf from variables like env=dev and version=1.0.
+
+1)Create providers.tf
+
+terraform {
+  required_providers {
+    local = {
+      source = "hashicorp/local"
+    }
+  }
+}
+
+2) Create variables.tf
+
+variable "env" {
+  default     = "dev"
+}
+
+variable "app_version" {
+  default = "1.0"
+}
+
+3) Create main.tf
+
+resource "local_file" "app_config" {
+  filename = "${path.module}/app.conf"
+  content  = <<-EOT
+                environment = ${var.env}
+                version = ${var.app_version}
+        EOT
+  file_permission = "0644"
+}

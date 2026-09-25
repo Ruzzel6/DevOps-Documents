@@ -1,0 +1,50 @@
+4. Here's a simple, single-file Terraform IaC setup to fire up a Docker container locally—runs Nginx serving a "DevOps Lab" page on port 8080. Perfect quick demo for your students, zero cloud costs.
+Just terraform init && apply; destroys cleanly.
+
+
+
+terraform {
+  required_providers {
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "~>3.0"
+    }
+  }
+}
+
+provider "docker" {}
+
+resource "docker_image" "nginx" {
+  name = "nginx:latest"
+}
+
+resource "docker_container" "nginx_server" {
+  name  = "devops_lab_nginx"
+  image = docker_image.nginx.image_id
+
+  ports {
+    internal = 80
+    external = 8080
+  }
+
+  upload {
+    file    = "/usr/share/nginx/html/index.html"
+    content = <<-EOF
+      <html>
+        <head><title>DevOps Lab</title></head>
+        <body style="font-family: Arial; text-align:center; margin-top:50px;">
+          <h1>🚀 DevOps Lab</h1>
+          <p>Terraform + Docker is working!</p>
+        </body>
+      </html>
+    EOF
+  }
+}
+
+
+terraform fmt
+terraform init
+terraform validate
+terraform plan
+terraform apply 
+After checking http://192.168.56.101:8080/  >> terraform destroy

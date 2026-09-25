@@ -1,0 +1,42 @@
+2. Provision a Ubuntu AWS instance in us-east for a Docker-ready web server.
+
+
+#Step 1) 
+aws configure
+Give the key and Key ID
+Select the region = us=east-1
+Output: press enter (default)
+
+Step 2)
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_instance" "docker_server" {
+  ami = "ami-091138d0f0d41ff90"
+  instance_type = "t2.micro"
+  tags = {
+    name = "docker_server"
+  }
+  user_data = <<-EOF
+#!/bin/bash
+apt update && apt upgrade -y
+apt install -y docker.io
+apt install nginx -y
+systemctl start nginx
+systemctl start docker
+systemctl enable docker
+usermod -aG docker ubuntu
+docker run -d -p 80:80 --name nginx nginx
+docker exec nginx bash -c 'echo "<h1>Hello from terraform docker aws </h1>" > /usr/share/nginx/html/index.html'
+EOF
+}
+
+
+
+terraform init
+terraform validate
+terraform plan
+terraform apply
+terraform destroy //After checking
