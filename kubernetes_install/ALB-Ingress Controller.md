@@ -1,4 +1,4 @@
-# How to setup alb add on
+# Kubernetes Ingress with AWS ALB Ingress Controller
 
 OIDC is an identity protocol that lets Kubernetes prove pod identity to AWS using signed tokens instead of static credentials. On EKS, this powers IRSA — each ServiceAccount can be tied to a specific IAM role via the cluster's OIDC provider, so individual pods get exactly the AWS permissions they need, rather than every pod on a node inheriting the same broad EC2 instance role.
 
