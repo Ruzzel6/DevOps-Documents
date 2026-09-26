@@ -123,6 +123,6 @@ aws iam create-policy-version \
 ```
 
 ===============================
-To create OIDC provider: https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html
+#To create OIDC provider: https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html
 Kubernetes Ingress with AWS ALB Ingress Controller: https://aws.amazon.com/blogs/opensource/kubernetes-ingress-aws-alb-ingress-controller/
 Installation of eksctl: https://docs.aws.amazon.com/eks/latest/eksctl/installation.html
