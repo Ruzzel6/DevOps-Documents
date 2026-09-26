@@ -132,7 +132,7 @@ Installation of eksctl: https://docs.aws.amazon.com/eks/latest/eksctl/installati
 Installation of Helm: https://helm.sh/docs/intro/install/
 
 From Script
-```
+
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
 chmod 700 get_helm.sh
 ./get_helm.sh
