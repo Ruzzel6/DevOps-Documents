@@ -1,5 +1,5 @@
 # How to setup alb add on
-####Add Notes: "On EKS, a ServiceAccount can be annotated to assume an AWS IAM role"
+Add Notes: "On EKS, a ServiceAccount can be annotated to assume an AWS IAM role"
 OIDC is the actual mechanism that makes that work. This feature is called IRSA (IAM Roles for Service Accounts), and OIDC is the trust protocol underneath it.
 
 ##  Setup OIDC Connector
