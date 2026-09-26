@@ -1,0 +1,14 @@
+1) kubectl cp <namespace>/<pod-name>:/path/in/pod ./local-dir      //Copying files from a running pod
+1.1) aws s3 cp ./local-dir s3://bucket/path/ --recursive
+
+2) kubectl exec -it <pod-name> -- aws s3 sync /data s3://bucket/path/    //Direct pod-to-S3, no local hop:
+
+3) Velero backs up both Kubernetes resource manifests and PV data. Copying an entire PersistentVolume (PV) / PVC with the S3 bucket already registered as Velero's BackupStorageLocation
+
+#velero backup create my-backup --include-namespaces=my-namespace
+
+4) kubectl scale deployment opentelemetry-demo-adservice --replicas=0   //2. Stop it WITHOUT deleting it (scale to zero)
+
+5) kubectl config current-context //To check which cluster is connected to 
+
+6)  kubectl get svc opentelemetry-demo-frontendproxy -o yaml > frontendproxy.yaml       //Extract just that one Service into its own file
