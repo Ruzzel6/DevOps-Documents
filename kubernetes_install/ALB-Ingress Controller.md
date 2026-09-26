@@ -121,3 +121,6 @@ aws iam create-policy-version \
     --policy-document file://policy.json \
     --set-as-default
 ```
+
+
+https://aws.amazon.com/blogs/opensource/kubernetes-ingress-aws-alb-ingress-controller/
