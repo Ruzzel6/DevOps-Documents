@@ -1,0 +1,3 @@
+If you change the providers version  
+
+# terraform init -upgrade   //This updates .terraform.lock.hcl
