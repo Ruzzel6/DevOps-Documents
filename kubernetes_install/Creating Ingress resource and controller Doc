@@ -1,0 +1,10 @@
+# kubectl get ing
+
+NAME             CLASS   HOSTS            ADDRESS                                                                  PORTS   AGE
+frontend-proxy   alb     zozoglobal.com   k8s-default-frontend-6e54782b3e-1979975760.us-west-2.elb.amazonaws.com   80      7m58s
+If by any issue the while deploying the 
+
+
+If you dont get the LB address check the ingress controller pod logs
+# kubectl get pods -n kube-system  // You can see the controller created for example aws-load-balancer-controller-cf885b966-gvvwd 
+# kubectl logs -n kube-system aws-load-balancer-controller-cf885b966-gvvwd
