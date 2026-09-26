@@ -1,4 +1,4 @@
-# Kubernetes Ingress with AWS ALB Ingress Controller
+# Install AWS Load Balancer Controller with Helm
 
 OIDC is an identity protocol that lets Kubernetes prove pod identity to AWS using signed tokens instead of static credentials. On EKS, this powers IRSA — each ServiceAccount can be tied to a specific IAM role via the cluster's OIDC provider, so individual pods get exactly the AWS permissions they need, rather than every pod on a node inheriting the same broad EC2 instance role.
 
@@ -125,7 +125,7 @@ aws iam create-policy-version \
 ## Additional details
 ```
 #To create OIDC provider: https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html
-Kubernetes Ingress with AWS ALB Ingress Controller: https://aws.amazon.com/blogs/opensource/kubernetes-ingress-aws-alb-ingress-controller/
+Instalation Doc: https://docs.aws.amazon.com/eks/latest/userguide/lbc-helm.html
 Installation of eksctl: https://docs.aws.amazon.com/eks/latest/eksctl/installation.html
 
 
