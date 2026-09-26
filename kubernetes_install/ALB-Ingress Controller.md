@@ -19,6 +19,9 @@ oidc_id=$(aws eks describe-cluster --name $cluster_name --query "cluster.identit
 
 ## Check if there is an IAM OIDC provider configured already
 
+$ echo $oidc_id
+390F831625619FF07A13D14C33B45DED
+
 - aws iam list-open-id-connect-providers | grep $oidc_id | cut -d "/" -f4\n 
 
 If not, run the below command
