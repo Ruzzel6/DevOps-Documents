@@ -1,0 +1,1 @@
+# git remote -v   //is a Git command that shows the remote repositories connected to your local Git repository.
