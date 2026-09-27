@@ -1,3 +1,4 @@
+```
 1) kubectl cp <namespace>/<pod-name>:/path/in/pod ./local-dir      //Copying files from a running pod
 1.1) aws s3 cp ./local-dir s3://bucket/path/ --recursive
 
@@ -12,3 +13,4 @@
 5) kubectl config current-context //To check which cluster is connected to 
 
 6)  kubectl get svc opentelemetry-demo-frontendproxy -o yaml > frontendproxy.yaml       //Extract just that one Service into its own file
+```
