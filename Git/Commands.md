@@ -15,3 +15,9 @@ git pull gha-repo main
 git status
 git push gha-repo main
 ```
+```
+###Git Branch
+git checkout -b ci-check //To create and checkout on that branch
+git checkout main   //Switch to main
+git branch -d checkout //Delete the checkout branch
+```
