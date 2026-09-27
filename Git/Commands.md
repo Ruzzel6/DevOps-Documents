@@ -3,7 +3,8 @@
 # git remote add <remote-name> <repository-url>
 # git remote add gha-repo https://github.com/Ruzzel6/reponame.  // Then merge the initial commit that repo had
 
-Note: origin stays pointed at the original source repo the whole time — you only ever push to gha-repo, never origin, unless you specifically want to contribute back upstream (which you usually don't for a forked/customized project like this).
+Note: origin stays pointed at the original source repo the whole time — you only ever push to gha-repo, never origin,
+unless you specifically want to contribute back upstream (which you usually don't for a forked/customized project like this).
 
 git remote -v
 git remote add gha-repo https://github.com/Ruzzel6/GitHub-Action-Opentelemetery-project-EKS.git
