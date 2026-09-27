@@ -11,6 +11,7 @@ git add .
 git commit -m "your message"
 git fetch gha-repo
 git merge gha-repo/main --allow-unrelated-histories
+git pull gha-repo main
 git status
 git push gha-repo main
 ```
