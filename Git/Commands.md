@@ -1,4 +1,6 @@
 ```
+# "Git Workflow: Pushing a Cloned Repo to Your Own GitHub Repo"
+
 # git remote -v   //is a Git command that shows the remote repositories connected to your local Git repository.
 # git remote add <remote-name> <repository-url>
 # git remote add gha-repo https://github.com/Ruzzel6/reponame.  // Then merge the initial commit that repo had
