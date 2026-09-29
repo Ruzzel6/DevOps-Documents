@@ -19,6 +19,19 @@ git pull gha-repo main
 git status
 git push gha-repo main
 
+To cheeck the changes:
+
+1. See the commit log of what's new on the remote
+git log HEAD..gha-repo/main --oneline
+
+2. See the actual file diff (what changed, not just commit messages)
+git diff HEAD..gha-repo/main
+
+3. See just which files changed (no line-by-line diff, just filenames)
+git diff --stat HEAD..gha-repo/main
+
+// "commits that exist on gha-repo/main but are NOT reachable from my current HEAD" — in plain terms, what's new on the remote that I don't have locally yet.
+(Note: this is different from gha-repo/main..HEAD, which would flip it — showing what YOU have that the remote doesn't.)
 
 ```
 ```
