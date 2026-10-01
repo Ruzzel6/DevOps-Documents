@@ -10,7 +10,9 @@
 
 4) kubectl scale deployment opentelemetry-demo-adservice --replicas=0   //2. Stop it WITHOUT deleting it (scale to zero)
 
-5) kubectl config current-context //To check which cluster is connected to 
+5) kubectl config current-context //To check which cluster is connected to
+
+5.1) kubectl config use-context arn:aws:eks:ap-south-1:123456789012:cluster/my-eks-cluster
 
 6)  kubectl get svc opentelemetry-demo-frontendproxy -o yaml > frontendproxy.yaml       //Extract just that one Service into its own file
 ```
