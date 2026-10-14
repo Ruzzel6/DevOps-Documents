@@ -1,0 +1,3 @@
+
+$ kubectl get deployment <name> -n <namespace> -o jsonpath='{.spec.template.spec.containers[0].image}'` — this shows you the image tag the deployment is configured to use right now.
+$ kubectl rollout history deployment/<name> -n <namespace>` — shows past revisions, and you can add `--revision=<n>` to see exactly what image that revision used.
