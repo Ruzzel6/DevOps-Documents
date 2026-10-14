@@ -21,9 +21,10 @@ Pod Template:
 ## Check Endpoints
 # kubectl get endpoints rfid-backend -n prod // To get the endpoints.
 Broken (no pod is passing readiness, or the labels don’t match):
+---
 NAME           ENDPOINTS   AGE
 rfid-backend   <none>      12d
-
+---
 ## 6 Check Service:
 # kubectl describe svc rfid-backend -n prod
 
