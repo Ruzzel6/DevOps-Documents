@@ -1,4 +1,4 @@
-
+```
 $ kubectl get deployment <name> -n <namespace> -o jsonpath='{.spec.template.spec.containers[0].image}'` — this shows you the image tag the deployment is configured to use right now.
 $ kubectl rollout history deployment/<name> -n <namespace>` — shows past revisions, and you can add `--revision=<n>` to see exactly what image that revision used.
 
@@ -35,3 +35,9 @@ LAST SEEN   TYPE      REASON      OBJECT                           MESSAGE
 2m          Warning   Unhealthy   pod/rfid-backend-7d9f8c6b5-ghi56 Readiness probe failed: HTTP probe failed with statuscode: 503
 1m          Warning   Unhealthy   pod/rfid-backend-7d9f8c6b5-ghi56 Readiness probe failed: HTTP probe failed with statuscode: 503
 ----
+Pending
+------
+$ kubectl describe pod to confirm the exact message.
+$ kubectl describe node <node> and look at Allocated resources to see how much is already requested.
+$ kubectl top nodes to compare against real usage.
+```
