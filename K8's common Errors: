@@ -7,6 +7,16 @@ Exanple Troubleshoot:
 # kubectl rollout status deployment/rfid-backend -n dev //successfully rolled out Or // Waiting for deployment "rfid-backend" rollout to finish
 # kubectl rollout history deployment/rfid-backend -n dev // Revisions
 # kubectl rollout history deployment/rfid-backend -n dev --revision=3  //This shows exactly which image each revision used, so you can see whether the wrong version went out.
+----
+deployment.apps/rfid-backend with revision #3
+Pod Template:
+  Labels:       app=rfid-backend
+                pod-template-hash=7d9f8c6b5
+  Containers:
+   rfid-backend:
+    Image:      123456789012.dkr.ecr.ap-south-1.amazonaws.com/rfid-backend:151-9f8e7d6
+    Port:       8080/TCP
+------
 
 ## Check Endpoints
 # kubectl get endpoints rfid-backend -n prod // To get the endpoints.
