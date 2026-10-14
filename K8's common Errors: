@@ -30,3 +30,8 @@ rfid-backend   <none>      12d
 
 ## 7 Event 
 # kubectl get events -n prod --sort-by=.lastTimestamp  //Repeated readiness failures here would explain why that pod is out of the endpoints.
+----
+LAST SEEN   TYPE      REASON      OBJECT                           MESSAGE
+2m          Warning   Unhealthy   pod/rfid-backend-7d9f8c6b5-ghi56 Readiness probe failed: HTTP probe failed with statuscode: 503
+1m          Warning   Unhealthy   pod/rfid-backend-7d9f8c6b5-ghi56 Readiness probe failed: HTTP probe failed with statuscode: 503
+----
