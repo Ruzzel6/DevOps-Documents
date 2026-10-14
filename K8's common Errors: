@@ -1,8 +1,8 @@
 
 $ kubectl get deployment <name> -n <namespace> -o jsonpath='{.spec.template.spec.containers[0].image}'` — this shows you the image tag the deployment is configured to use right now.
 $ kubectl rollout history deployment/<name> -n <namespace>` — shows past revisions, and you can add `--revision=<n>` to see exactly what image that revision used.
-EG:
 
+Exanple Troubleshoot:
 # kubectl get deployment rfid-backend -n prod -o jsonpath='{.spec.template.spec.containers[0].image}'  //Compare the tag with what Jenkins just built. If it shows the old build number, the deploy didn’t update the image. 
 # kubectl rollout status deployment/rfid-backend -n dev //successfully rolled out Or // Waiting for deployment "rfid-backend" rollout to finish
 # kubectl rollout history deployment/rfid-backend -n dev // Revisions
